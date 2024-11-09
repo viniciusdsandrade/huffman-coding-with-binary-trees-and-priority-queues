@@ -1,12 +1,7 @@
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
 
-import static java.lang.Integer.parseInt;
 import static java.lang.Integer.toBinaryString;
-import static java.lang.Math.min;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class HuffmanCoding {
@@ -19,7 +14,6 @@ public class HuffmanCoding {
         frequencies = new HashMap<>();
     }
 
-    // Método principal para compactar um arquivo
     public void compress(String inputFilePath, String outputFilePath) throws IOException {
         String text = readFile(inputFilePath);
         calculateFrequencies(text);
@@ -52,7 +46,6 @@ public class HuffmanCoding {
         System.out.println("Arquivo compactado com sucesso!");
     }
 
-    // Método principal para descompactar um arquivo
     public void decompress(String inputFilePath, String outputFilePath) throws IOException {
         DataInputStream dis = new DataInputStream(new FileInputStream(inputFilePath));
 
@@ -77,9 +70,8 @@ public class HuffmanCoding {
         dis.close();
 
         String encodedText = bytesToBinaryString(encodedBytes);
-        if (encodedText.length() > numberOfBits) {
+        if (encodedText.length() > numberOfBits)
             encodedText = encodedText.substring(0, numberOfBits); // Trunca os bits de preenchimento
-        }
 
         // Passa o total de caracteres esperados para a função decodeText
         String decodedText = decodeText(encodedText, totalCharacters);
@@ -93,9 +85,9 @@ public class HuffmanCoding {
         StringBuilder sb = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), UTF_8));
         int ch;
-        while ((ch = br.read()) != -1) {
-            sb.append((char) ch);
-        }
+
+        while ((ch = br.read()) != -1) sb.append((char) ch);
+
         br.close();
         return sb.toString();
     }
@@ -124,7 +116,7 @@ public class HuffmanCoding {
     private void buildHuffmanTree() {
         PriorityQueue<HuffmanNode> priorityQueue = new PriorityQueue<>();
 
-        // Criação dos nós folha e inserção na fila de prioridade
+        // Criação dos 'nós' folha e inserção na fila de prioridade
         Set<Character> keys = frequencies.keySet();
         for (Character c : keys) {
             if (c != null) {
@@ -145,9 +137,7 @@ public class HuffmanCoding {
         }
 
         // A raiz da árvore é o único nó restante na fila
-        if (!priorityQueue.isEmpty()) {
-            huffmanTreeRoot = priorityQueue.poll();
-        }
+        if (!priorityQueue.isEmpty()) huffmanTreeRoot = priorityQueue.poll();
     }
 
     // Geração dos códigos de Huffman a partir da árvore
@@ -177,34 +167,11 @@ public class HuffmanCoding {
             }
         }
         // Debug: Imprimir texto codificado
-        System.out.println("Texto Codificado: " + sb.toString());
+        System.out.println("Texto Codificado: " + sb);
         return sb.toString();
     }
 
-    // Método para escrever o arquivo compactado
-    private void writeCompressedFile(String encodedText, String filePath) throws IOException {
-        DataOutputStream dos = new DataOutputStream(new FileOutputStream(filePath));
-
-        // Escrita das frequências para descompactação
-        Set<Character> keys = frequencies.keySet();
-        int size = keys.size();
-        dos.writeInt(size); // Número de caracteres únicos
-        for (Character c : keys) {
-            dos.writeChar(c);
-            dos.writeInt(frequencies.get(c));
-        }
-
-        // Conversão do texto codificado em bytes
-        byte[] encodedBytes = binaryStringToBytes(encodedText);
-
-        // Escrita do número total de bits e dos bytes do texto codificado
-        dos.writeInt(encodedText.length()); // Número total de bits
-        dos.write(encodedBytes);
-        dos.close();
-    }
-
     // Decodificação do texto codificado
-    // Agora recebe um parâmetro adicional expectedLength
     private String decodeText(String encodedText, int expectedLength) {
         StringBuilder sb = new StringBuilder();
         HuffmanNode root = huffmanTreeRoot;
@@ -212,18 +179,15 @@ public class HuffmanCoding {
 
         for (int i = 0; i < encodedText.length(); i++) {
             char bit = encodedText.charAt(i);
-            if (bit == '0') {
-                current = current.leftNode;
-            } else if (bit == '1') {
-                current = current.rightNode;
-            } else {
-                throw new IllegalArgumentException("Bit inválido no texto codificado: " + bit);
-            }
+            current = switch (bit) {
+                case '0' -> current.leftNode;
+                case '1' -> current.rightNode;
+                default -> throw new IllegalArgumentException("Bit inválido no texto codificado: " + bit);
+            };
 
             // Se um nó folha for alcançado
-            if (current.leftNode == null && current.rightNode == null) {
+            if ((current != null ? current.leftNode : null) == null && Objects.requireNonNull(current).rightNode == null) {
                 sb.append(current.character);
-                System.out.println("Decodificado: '" + current.character + "'");
                 current = root;
 
                 // Verifica se alcançou o número esperado de caracteres
@@ -236,22 +200,6 @@ public class HuffmanCoding {
         return sb.toString();
     }
 
-    // Conversão de String binária para array de bytes
-    private byte[] binaryStringToBytes(String binaryString) {
-        int byteLength = (binaryString.length() + 7) / 8;
-        byte[] data = new byte[byteLength];
-        int index = 0;
-        for (int i = 0; i < binaryString.length(); i += 8) {
-            String byteString = binaryString.substring(i, min(i + 8, binaryString.length()));
-            data[index++] = (byte) parseInt(byteString, 2);
-        }
-        // Debug: Imprimir bytes codificados
-        System.out.println("Bytes Codificados:");
-        for (byte b : data) System.out.printf("%02X ", b);
-        System.out.println();
-        return data;
-    }
-
     // Conversão de array de bytes para String binária
     private String bytesToBinaryString(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
@@ -260,7 +208,7 @@ public class HuffmanCoding {
             sb.append(byteString);
         }
         // Debug: Imprimir string de bits
-        System.out.println("String de Bits Decodificada: " + sb);
+        //System.out.println("String de Bits Decodificada: " + sb);
         return sb.toString();
     }
 }
