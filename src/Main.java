@@ -7,31 +7,17 @@ public static void main(String[] ignoredArgs) {
 
         // Passo 2: Definir um texto de exemplo para ser compactado
         String originalText = """
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\s
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure\s
-                dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non\s
-                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                
-                Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum\s
-                elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate\s
-                vehicula. Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper, ligula eu tempor congue, eros est euismod turpis, id\s
-                tincidunt sapien risus a quam. Maecenas fermentum consequat mi. Donec fermentum. Pellentesque malesuada nulla a mi. Duis sapien\s
-                sem, aliquet nec, commodo eget, consequat quis, neque. Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien,\s
-                sed malesuada diam lacus eget erat. Cras mollis scelerisque nunc. Nullam arcu. Aliquam consequat. Curabitur augue lorem,\s
-                dignissim eget, malesuada ut, scelerisque sed, sapien.
-                
-                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\s
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure\s
-                dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non\s
-                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                
-                Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum\s
-                elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate\s
-                vehicula. Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper, ligula eu tempor congue, eros est euismod turpis, id\s
-                tincidunt sapien risus a quam. Maecenas fermentum consequat mi. Donec fermentum. Pellentesque malesuada nulla a mi. Duis sapien\s
-                sem, aliquet nec, commodo eget, consequat quis, neque. Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien,\s
-                sed malesuada diam lacus eget erat. Cras mollis scelerisque nunc. Nullam arcu. Aliquam consequat. Curabitur augue lorem,\s
-                dignissim eget, malesuada ut, scelerisque sed, sapien.
+                A quick brown fox jumps over the lazy dog.
+                A quick brown fox jumps over the lazy dog.
+                A quick brown fox jumps over the lazy dog.
+                A quick brown fox jumps over the lazy dog.
+                A quick brown fox jumps over the lazy dog.
+                A quick brown fox jumps over the lazy dog.
+                A quick brown fox jumps over the lazy dog.
+                A quick brown fox jumps over the lazy dog.
+                A quick brown fox jumps over the lazy dog.
+                A quick brown fox jumps over the lazy dog.
+                A quick brown fox jumps over the lazy dog.
                 """;
 
         // Passo 3: Escrever esse texto em um arquivo temporário

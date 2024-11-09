@@ -1,0 +1,326 @@
+package data_structures.PriorityQueue;
+
+import java.util.EmptyStackException;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+
+import static data_structures.ShallowOrDeepCopy.ShallowOrDeepCopy.verifyAndCopy;
+import static java.lang.Integer.MAX_VALUE;
+import static java.lang.Integer.MIN_VALUE;
+import static java.lang.System.arraycopy;
+
+public class PriorityQueue<X> implements Cloneable {
+
+    // Classe interna para representar um elemento com sua prioridade
+    private static class Item<X> implements Cloneable {
+        private X value;
+        private int priority;
+
+        public X getValue() {
+            return value;
+        }
+        public int getPriority() {
+            return priority;
+        }
+        public void setPriority(int priority) {
+            this.priority = priority;
+        }
+        public void setValue(X value) {
+            this.value = value;
+        }
+
+        Item(X value, int priority) {
+            this.value = value;
+            this.priority = priority;
+        }
+
+        @SuppressWarnings("unchecked")
+        Item(Item<X> other) {
+            if (other == null) throw new IllegalArgumentException("Item a ser copiado é nulo");
+            this.value = (X) verifyAndCopy(other.value);
+            this.priority = other.priority;
+        }
+
+        @Override
+        @SuppressWarnings({"CloneNotSupportedException", "MethodDoesntCallSuperMethod"})
+        protected Item<X> clone() throws CloneNotSupportedException {
+            Item<X> clone = null;
+            try {
+                clone = new Item<>(this);
+            } catch (Exception ignored) {
+            }
+            return clone;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null) return false;
+            if (this.getClass() != obj.getClass()) return false;
+
+            Item<?> other = (Item<?>) obj;
+
+            return this.priority == other.priority &&
+                   Objects.equals(this.value, other.value);
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int hash = 1;
+
+            hash *= prime + this.value.hashCode();
+            hash *= prime + Integer.hashCode(this.priority);
+
+            if (hash < 0) hash = -hash;
+
+            return hash;
+        }
+
+        @Override
+        public String toString() {
+            return "(" + value + ", " + priority + ")";
+        }
+    }
+
+    private Item<X>[] elements;
+    private final int initialSize;
+    private int last = -1;
+
+    // Default constructor with initial size 10
+    @SuppressWarnings("unchecked")
+    public PriorityQueue() {
+        this.initialSize = 10;
+        this.elements = new Item[initialSize];
+    }
+
+    // Constructor with custom initial size
+    @SuppressWarnings("unchecked")
+    public PriorityQueue(int initialSize) {
+        if (initialSize <= 0) throw new IllegalArgumentException("Invalid size");
+
+        this.elements = (Item<X>[]) verifyAndCopy(new Item[initialSize]);
+        this.initialSize = initialSize;
+    }
+
+    /**
+     * Inserts a new element into the priority queue.
+     *
+     * @param x        The value to be inserted.
+     * @param priority The priority of the element.
+     */
+    @SuppressWarnings("unchecked")
+    public void enqueue(X x, int priority) {
+        if (x == null) throw new IllegalArgumentException("Null element");
+        if (priority < 0) throw new IllegalArgumentException("Negative priority not allowed");
+
+        if (this.isFull()) this.resizeUp();
+
+        this.last++;
+        this.elements[this.last] = (Item<X>) new Item<>(verifyAndCopy(x), priority);
+    }
+
+    /**
+     * Retrieves the element with the highest priority without removing it.
+     *
+     * @return The value of the element with the highest priority.
+     */
+    public X peek() {
+        if (this.isEmpty()) throw new EmptyStackException();
+
+        int lowestPriorityIndex = findLowestPriorityIndex();
+        return this.elements[lowestPriorityIndex].value;
+    }
+    /**
+     * Removes and returns the element with the highest priority.
+     *
+     * @return The value of the removed element.
+     */
+    public X dequeue() {
+        if (isEmpty()) throw new NoSuchElementException("data_structures.PriorityQueue is empty");
+
+        // Encontra o índice do elemento com a menor prioridade
+        int minIndex = 0;
+        for (int i = 1; i <= last; i++) {
+            if (elements[i].priority < elements[minIndex].priority) {
+                minIndex = i;
+            }
+        }
+
+        // Remove e retorna o elemento com a menor prioridade
+        X value = elements[minIndex].value;
+
+        // Desloca os elementos para preencher o espaço vazio
+        for (int i = minIndex; i < last; i++) elements[i] = elements[i + 1];
+
+        elements[last] = null;
+        last--;
+
+        // Opcional: Redimensiona para baixo se necessário
+        if (elements.length > initialSize && last + 1 <= Math.round((float) elements.length / 4))
+            resizeDown();
+
+        return value;
+    }
+
+
+    public int size() {
+        return this.last + 1;
+    }
+
+
+    private int findLowestPriorityIndex() {
+        int lowestPriority = MAX_VALUE;
+        int index = -1;
+
+        for (int i = 0; i <= this.last; i++) {
+            if (this.elements[i].priority < lowestPriority) {
+                lowestPriority = this.elements[i].priority;
+                index = i;
+            }
+        }
+
+        return index;
+    }
+
+    /**
+     * Finds the index of the element with the highest priority.
+     * If multiple elements have the same priority, the one inserted earliest is chosen.
+     *
+     * @return The index of the highest priority element.
+     */
+    private int findHighestPriorityIndex() {
+        int highestPriority = MIN_VALUE;
+        int index = -1;
+
+        for (int i = 0; i <= this.last; i++) {
+            if (this.elements[i].priority > highestPriority) {
+                highestPriority = this.elements[i].priority;
+                index = i;
+            }
+        }
+
+        return index;
+    }
+
+    // Resizes the internal array to double its current size
+    @SuppressWarnings("unchecked")
+    private void resizeUp() {
+        Item<X>[] newElements = new Item[this.elements.length * 2];
+        arraycopy(this.elements, 0, newElements, 0, this.elements.length);
+        this.elements = newElements;
+    }
+
+    // Resizes the internal array to half its current size
+    @SuppressWarnings("unchecked")
+    private void resizeDown() {
+        Item<X>[] newElements = new Item[(int) Math.ceil((float) this.elements.length / 2)];
+        arraycopy(this.elements, 0, newElements, 0, newElements.length);
+        this.elements = newElements;
+    }
+
+    /**
+     * Checks if the priority queue is empty.
+     *
+     * @return True if empty, otherwise false.
+     */
+    public boolean isEmpty() {
+        return this.last == -1;
+    }
+
+    /**
+     * Checks if the priority queue is full.
+     *
+     * @return True if full, otherwise false.
+     */
+    public boolean isFull() {
+        return this.last + 1 == this.elements.length;
+    }
+
+    /**
+     * Returns a string representation of the priority queue.
+     *
+     * @return A string representing the elements in the queue.
+     */
+    public String toArray() {
+        if (this.isEmpty()) return "[]";
+        StringBuilder ret = new StringBuilder("[");
+        for (int i = 0; i < this.last; i++)
+            ret.append(this.elements[i].value).append(", ");
+        ret.append(this.elements[this.last].value).append("]");
+        return ret.toString();
+    }
+
+    // Copy constructor
+    @SuppressWarnings("unchecked")
+    public PriorityQueue(PriorityQueue<X> model) throws CloneNotSupportedException {
+        if (model == null) throw new IllegalArgumentException("Model is missing");
+
+        this.initialSize = model.initialSize;
+        this.last = model.last;
+        this.elements = (Item<X>[]) verifyAndCopy(new Item[model.elements.length]);
+
+        for (int i = 0; i <= this.last; i++)
+            this.elements[i] = model.elements[i].clone();
+    }
+
+    @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    public Object clone() {
+        PriorityQueue<X> clone = null;
+        try {
+            clone = new PriorityQueue<X>(this);
+        } catch (Exception ignored) {
+        }
+        return clone;
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (this.getClass() != obj.getClass()) return false;
+
+        PriorityQueue<?> other = (PriorityQueue<?>) obj;
+
+        if (this.initialSize != other.initialSize) return false;
+        if (this.last != other.last) return false;
+
+        for (int i = 0; i <= this.last; i++)
+            if (!this.elements[i].value.equals(other.elements[i].value) || this.elements[i].priority != other.elements[i].priority)
+                return false;
+
+        return true;
+    }
+
+    @Override
+    public final int hashCode() {
+        final int prime = 31;
+        int hash = 1;
+
+        hash *= prime + Integer.hashCode(this.initialSize);
+        hash *= prime + Integer.hashCode(this.last);
+
+        for (int i = 0; i <= this.last; i++) {
+            hash *= prime + this.elements[i].value.hashCode();
+            hash *= prime + Integer.hashCode(this.elements[i].priority);
+        }
+
+        if (hash < 0) hash = -hash;
+
+        return hash;
+    }
+
+    @Override
+    public final String toString() {
+        if (this.isEmpty()) return "[]";
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i <= this.last; i++) {
+            sb.append("(").append(this.elements[i].value).append(", ")
+                    .append(this.elements[i].priority).append(")");
+            if (i != this.last) sb.append(", ");
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+}

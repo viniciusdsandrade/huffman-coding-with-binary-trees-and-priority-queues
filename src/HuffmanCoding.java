@@ -1,8 +1,8 @@
 import java.io.*;
 
-import PriorityQueue.PriorityQueue;
-import HashMap.HashMapLinkedListUnordered;
-import LinkedList.Unordered.LinkedListUnordered;
+import data_structures.PriorityQueue.PriorityQueue;
+import data_structures.HashMap.HashMapLinkedListUnordered;
+import data_structures.LinkedList.Unordered.LinkedListUnordered;
 
 import static java.lang.Integer.toBinaryString;
 import static java.nio.charset.StandardCharsets.UTF_8;

@@ -1,6 +1,6 @@
 import java.util.Objects;
 
-import static ShallowOrDeepCopy.ShallowOrDeepCopy.verifyAndCopy;
+import static data_structures.ShallowOrDeepCopy.ShallowOrDeepCopy.verifyAndCopy;
 import static java.lang.Integer.compare;
 
 /// # HuffmanNode
