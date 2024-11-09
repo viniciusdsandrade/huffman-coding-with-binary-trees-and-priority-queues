@@ -8,16 +8,62 @@ import static java.lang.Integer.toBinaryString;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 
+/// # HuffmanCoding
+///
+/// A class that provides methods to compress and decompress text files using Huffman Coding.
+///
+/// ## Overview
+///
+/// Huffman Coding is a lossless data compression algorithm that assigns variable-length codes to characters based on their frequencies. Characters with higher frequencies are assigned shorter codes, resulting in efficient compression.
+///
+/// ## Fields
+///
+/// - `huffmanCodes`: A map storing the Huffman codes for each character.
+/// - `huffmanTreeRoot`: The root node of the Huffman tree.
+/// - `frequencies`: A map storing the frequency of each character.
+///
+/// ## Example
+///
+/// ```java
+/// HuffmanCoding hc = new HuffmanCoding();
+/// hc.compress("input.txt", "compressed.bin");
+/// hc.decompress("compressed.bin", "output.txt");
+/// ```
 public class HuffmanCoding {
     private final HashMapLinkedListUnordered<Character, String> huffmanCodes;
     private HuffmanNode huffmanTreeRoot;
     private HashMapLinkedListUnordered<Character, Integer> frequencies;
 
+    /// ## HuffmanCoding()
+    ///
+    /// Constructs a new `HuffmanCoding` instance with empty frequency and code maps.
     public HuffmanCoding() {
         huffmanCodes = new HashMapLinkedListUnordered<>();
         frequencies = new HashMapLinkedListUnordered<>();
     }
 
+    /// ## compress
+    ///
+    /// Compresses the input file and writes the compressed data to the output file.
+    ///
+    /// ### Parameters
+    ///
+    /// - `inputFilePath`: The path to the input text file to be compressed.
+    /// - `outputFilePath`: The path where the compressed file will be written.
+    ///
+    /// ### Throws
+    ///
+    /// - `IOException`: If an I/O error occurs during reading or writing files.
+    ///
+    /// ### Example
+    ///
+    /// ```java
+    /// hc.compress("input.txt", "compressed.bin");
+    /// ```
+    ///
+    /// @param inputFilePath the path to the input file
+    /// @param outputFilePath the path to the output file
+    /// @throws IOException if an I/O error occurs
     public void compress(String inputFilePath, String outputFilePath) throws IOException {
         String text = readFile(inputFilePath);
         calculateFrequencies(text);
@@ -57,6 +103,28 @@ public class HuffmanCoding {
         System.out.println("Arquivo compactado com sucesso!");
     }
 
+    /// ## decompress
+    ///
+    /// Decompresses the input file and writes the decompressed data to the output file.
+    ///
+    /// ### Parameters
+    ///
+    /// - `inputFilePath`: The path to the compressed input file.
+    /// - `outputFilePath`: The path where the decompressed file will be written.
+    ///
+    /// ### Throws
+    ///
+    /// - `IOException`: If an I/O error occurs during reading or writing files.
+    ///
+    /// ### Example
+    ///
+    /// ```java
+    /// hc.decompress("compressed.bin", "output.txt");
+    /// ```
+    ///
+    /// @param inputFilePath the path to the compressed input file
+    /// @param outputFilePath the path to the decompressed output file
+    /// @throws IOException if an I/O error occurs
     public void decompress(String inputFilePath, String outputFilePath) throws IOException {
         DataInputStream dis = new DataInputStream(new FileInputStream(inputFilePath));
 
@@ -91,7 +159,27 @@ public class HuffmanCoding {
         writeFile(decodedText, outputFilePath);
     }
 
-    // Metodo para ler o conteúdo de um arquivo de texto
+    /// ## readFile
+    ///
+    /// Reads the content of a text file and returns it as a `String`.
+    ///
+    /// ### Parameters
+    ///
+    /// - `filePath`: The path to the file to be read.
+    ///
+    /// ### Throws
+    ///
+    /// - `IOException`: If an I/O error occurs during reading the file.
+    ///
+    /// ### Example
+    ///
+    /// ```java
+    /// String content = hc.readFile("input.txt");
+    /// ```
+    ///
+    /// @param filePath the path to the file
+    /// @return the content of the file as a String
+    /// @throws IOException if an I/O error occurs
     private String readFile(String filePath) throws IOException {
         StringBuilder sb = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), UTF_8));
@@ -103,14 +191,49 @@ public class HuffmanCoding {
         return sb.toString();
     }
 
-    // Metodo para escrever um texto em um arquivo
+    /// ## writeFile
+    ///
+    /// Writes the given text to a file at the specified path.
+    ///
+    /// ### Parameters
+    ///
+    /// - `text`: The text to be written to the file.
+    /// - `filePath`: The path where the file will be written.
+    ///
+    /// ### Throws
+    ///
+    /// - `IOException`: If an I/O error occurs during writing the file.
+    ///
+    /// ### Example
+    ///
+    /// ```java
+    /// hc.writeFile("Hello, World!", "output.txt");
+    /// ```
+    ///
+    /// @param text the text to write to the file
+    /// @param filePath the path to the file
+    /// @throws IOException if an I/O error occurs
     private void writeFile(String text, String filePath) throws IOException {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), UTF_8));
         bw.write(text);
         bw.close();
     }
 
-    // Cálculo das frequências dos caracteres
+    /// ## calculateFrequencies
+    ///
+    /// Calculates the frequency of each character in the given text.
+    ///
+    /// ### Parameters
+    ///
+    /// - `text`: The text for which character frequencies are to be calculated.
+    ///
+    /// ### Example
+    ///
+    /// ```java
+    /// hc.calculateFrequencies("example");
+    /// ```
+    ///
+    /// @param text the text to analyze
     private void calculateFrequencies(String text) {
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
@@ -131,7 +254,16 @@ public class HuffmanCoding {
         }
     }
 
-    // Construção da árvore de Huffman
+    /// ## buildHuffmanTree
+    ///
+    /// Builds the Huffman tree based on the calculated character frequencies.
+    ///
+    /// ### Example
+    ///
+    /// ```java
+    /// hc.buildHuffmanTree();
+    /// ```
+    ///
     private void buildHuffmanTree() {
         // Inicializa a fila de prioridade personalizada
         PriorityQueue<HuffmanNode> priorityQueue = new PriorityQueue<HuffmanNode>();
@@ -166,8 +298,23 @@ public class HuffmanCoding {
         if (priorityQueue.size() == 1) huffmanTreeRoot = priorityQueue.dequeue();
     }
 
-
-    // Geração dos códigos de Huffman a partir da árvore
+    /// ## generateCodes
+    ///
+    /// Generates Huffman codes by traversing the Huffman tree.
+    ///
+    /// ### Parameters
+    ///
+    /// - `node`: The current node in the Huffman tree.
+    /// - `code`: The current Huffman code being generated.
+    ///
+    /// ### Example
+    ///
+    /// ```java
+    /// hc.generateCodes(huffmanTreeRoot, "");
+    /// ```
+    ///
+    /// @param node the current Huffman node
+    /// @param code the current Huffman code
     private void generateCodes(HuffmanNode node, String code) {
         if (node != null) {
             // Nó folha
@@ -181,7 +328,31 @@ public class HuffmanCoding {
         }
     }
 
-    // Codificação do texto usando os códigos de Huffman
+    /// ## encodeText
+    ///
+    /// Encodes the given text into its Huffman binary representation.
+    ///
+    /// ### Parameters
+    ///
+    /// - `text`: The text to be encoded.
+    ///
+    /// ### Returns
+    ///
+    /// A `String` representing the binary encoded text.
+    ///
+    /// ### Throws
+    ///
+    /// - `IllegalArgumentException`: If a character in the text does not have a corresponding Huffman code.
+    ///
+    /// ### Example
+    ///
+    /// ```java
+    /// String encoded = hc.encodeText("example");
+    /// ```
+    ///
+    /// @param text the text to encode
+    /// @return the encoded binary string
+    /// @throws IllegalArgumentException if a character is not found in Huffman codes
     private String encodeText(String text) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < text.length(); i++) {
@@ -195,7 +366,33 @@ public class HuffmanCoding {
         return sb.toString();
     }
 
-    // Decodificação do texto codificado
+    /// ## decodeText
+    ///
+    /// Decodes the given binary string back into the original text using the Huffman tree.
+    ///
+    /// ### Parameters
+    ///
+    /// - `encodedText`: The binary string to be decoded.
+    /// - `expectedLength`: The expected number of characters in the decoded text.
+    ///
+    /// ### Returns
+    ///
+    /// The decoded original text as a `String`.
+    ///
+    /// ### Throws
+    ///
+    /// - `IllegalArgumentException`: If an invalid bit is encountered in the encoded text.
+    ///
+    /// ### Example
+    ///
+    /// ```java
+    /// String decoded = hc.decodeText(encoded, 7);
+    /// ```
+    ///
+    /// @param encodedText the binary string to decode
+    /// @param expectedLength the expected number of characters
+    /// @return the decoded text
+    /// @throws IllegalArgumentException if an invalid bit is encountered
     private String decodeText(String encodedText, int expectedLength) {
         StringBuilder sb = new StringBuilder();
         HuffmanNode root = huffmanTreeRoot;
@@ -221,7 +418,26 @@ public class HuffmanCoding {
         return sb.toString();
     }
 
-    // Conversão de array de bytes para String binária
+    /// ## bytesToBinaryString
+    ///
+    /// Converts an array of bytes into a binary `String`.
+    ///
+    /// ### Parameters
+    ///
+    /// - `bytes`: The array of bytes to be converted.
+    ///
+    /// ### Returns
+    ///
+    /// A `String` representing the binary form of the input bytes.
+    ///
+    /// ### Example
+    ///
+    /// ```java
+    /// String binary = hc.bytesToBinaryString(new byte[]{(byte)0b10101010});
+    /// ```
+    ///
+    /// @param bytes the byte array to convert
+    /// @return the binary string representation
     private String bytesToBinaryString(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
