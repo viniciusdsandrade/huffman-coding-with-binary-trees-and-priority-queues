@@ -79,7 +79,6 @@ public class HuffmanCoding {
         writeFile(decodedText, outputFilePath);
     }
 
-
     // Metodo para ler o conteúdo de um arquivo de texto
     private String readFile(String filePath) throws IOException {
         StringBuilder sb = new StringBuilder();

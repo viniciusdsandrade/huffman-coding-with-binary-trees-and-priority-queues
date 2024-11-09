@@ -51,6 +51,7 @@ public class HashMapLinkedListUnordered<K, V> implements Cloneable {
          * @return Uma nova instância de Node clonada.
          */
         @Override
+        @SuppressWarnings("MethodDoesntCallSuperMethod")
         public Node clone() {
             Node clone = null;
             try {
@@ -263,8 +264,6 @@ public class HashMapLinkedListUnordered<K, V> implements Cloneable {
         return keys;
     }
 
-
-
     /**
      * Retorna o número de pares chave-valor no mapa.
      *
@@ -358,6 +357,7 @@ public class HashMapLinkedListUnordered<K, V> implements Cloneable {
      * @return Uma nova instância de HashMapLinkedListUnordered clonada.
      */
     @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public Object clone() {
         HashMapLinkedListUnordered<K, V> clone = null;
         try {

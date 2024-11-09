@@ -2,7 +2,7 @@ package HashMap;
 
 public class HashMapLinkedListUnorderedTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] ignoredArgs) {
         testPutAndGet();
         testPutUpdatesValue();
         testRemove();
