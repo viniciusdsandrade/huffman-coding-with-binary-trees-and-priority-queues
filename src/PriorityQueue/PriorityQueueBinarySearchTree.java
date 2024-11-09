@@ -1,11 +1,10 @@
 package PriorityQueue;
 
-import Tree.ArvoreBinaria;
+import Tree.BinaryTree;
 
 import java.util.NoSuchElementException;
 
 import static ShallowOrDeepCopy.ShallowOrDeepCopy.verifyAndCopy;
-import static java.lang.Long.compare;
 
 /**
  * A classe PriorityQueueBinarySearchTree implementa uma fila de prioridade utilizando uma árvore binária de busca.
@@ -151,13 +150,13 @@ public class PriorityQueueBinarySearchTree<X extends Comparable<X>> implements C
             return Integer.compare(other.prioridade, this.prioridade);
         }
     }
-    private ArvoreBinaria<Item> arvore;
+    private BinaryTree<Item> arvore;
 
     /**
      * Construtor padrão que inicializa uma fila de prioridade vazia.
      */
     public PriorityQueueBinarySearchTree() {
-        this.arvore = new ArvoreBinaria<>();
+        this.arvore = new BinaryTree<>();
     }
 
     /**
@@ -246,7 +245,7 @@ public class PriorityQueueBinarySearchTree<X extends Comparable<X>> implements C
     public PriorityQueueBinarySearchTree<X> clone() {
         try {
             PriorityQueueBinarySearchTree<X> clone = (PriorityQueueBinarySearchTree<X>) super.clone();
-            clone.arvore = (ArvoreBinaria<Item>) this.arvore.clone();
+            clone.arvore = (BinaryTree<Item>) this.arvore.clone();
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError(); // Nunca deve acontecer

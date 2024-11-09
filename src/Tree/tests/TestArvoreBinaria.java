@@ -1,12 +1,12 @@
 package Tree.tests;
 
-import Tree.ArvoreBinaria;
+import Tree.BinaryTree;
 
 import java.util.Arrays;
 
 public class TestArvoreBinaria {
     public static void main(String[] args) throws Exception {
-        ArvoreBinaria<Integer> arvore = new ArvoreBinaria<>();
+        BinaryTree<Integer> arvore = new BinaryTree<>();
         System.out.println("### Testes da Árvore Binária de Busca ###");
         System.out.println("\n1. Inserindo elementos na árvore:");
         arvore.inserir(30);
@@ -17,9 +17,9 @@ public class TestArvoreBinaria {
         arvore.inserir(80);
         arvore.inserir(50);
 
-        ArvoreBinaria<Integer> arvoreClone = new ArvoreBinaria<>(arvore);
+        BinaryTree<Integer> arvoreClone = new BinaryTree<>(arvore);
         @SuppressWarnings("unchecked")
-        ArvoreBinaria<Integer> arvoreClone2 = (ArvoreBinaria<Integer>) arvore.clone();
+        BinaryTree<Integer> arvoreClone2 = (BinaryTree<Integer>) arvore.clone();
 
         int elementosEmComumArvoreEArvoreClone = arvore.elementosEmComum(arvoreClone);
         int elementosEmComumArvoreEArvoreClone2 = arvore.elementosEmComum(arvoreClone2);
@@ -110,7 +110,7 @@ public class TestArvoreBinaria {
         System.out.println("isBalanceada: " + arvore.estaBalanceada()); // Verifica após balancear
 
         System.out.println("----------------------------------------------------------------");
-        ArvoreBinaria<Integer> arvore2 = new ArvoreBinaria<>();
+        BinaryTree<Integer> arvore2 = new BinaryTree<>();
         System.out.println("\n1. Inserindo elementos na árvore:");
         arvore2.inserir(5);
         arvore2.inserir(10);

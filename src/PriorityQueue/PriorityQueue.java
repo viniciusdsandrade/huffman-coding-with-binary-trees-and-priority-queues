@@ -40,7 +40,7 @@ public class PriorityQueue<X> implements Cloneable {
         }
 
         @Override
-        @SuppressWarnings("MethodDoesntCallSuperMethod")
+        @SuppressWarnings({"CloneNotSupportedException", "MethodDoesntCallSuperMethod"})
         protected Item<X> clone() {
             Item<X> clone = null;
             try {
@@ -110,6 +110,7 @@ public class PriorityQueue<X> implements Cloneable {
     @SuppressWarnings("unchecked")
     public void enqueue(X x, int priority) {
         if (x == null) throw new IllegalArgumentException("Null element");
+        if (priority < 0) throw new IllegalArgumentException("Negative priority not allowed");
 
         if (this.isFull()) this.resizeUp();
 
@@ -125,10 +126,9 @@ public class PriorityQueue<X> implements Cloneable {
     public X peek() {
         if (this.isEmpty()) throw new EmptyStackException();
 
-        int highestPriorityIndex = findHighestPriorityIndex();
-        return this.elements[highestPriorityIndex].value;
+        int lowestPriorityIndex = findLowestPriorityIndex();
+        return this.elements[lowestPriorityIndex].value;
     }
-
     /**
      * Removes and returns the element with the highest priority.
      *
@@ -137,11 +137,11 @@ public class PriorityQueue<X> implements Cloneable {
     public X dequeue() {
         if (this.isEmpty()) throw new EmptyStackException();
 
-        int highestPriorityIndex = findHighestPriorityIndex();
-        X value = this.elements[highestPriorityIndex].value;
+        int lowestPriorityIndex = findLowestPriorityIndex();
+        X value = this.elements[lowestPriorityIndex].value;
 
         // Shift elements to fill the gap
-        for (int i = highestPriorityIndex; i < this.last; i++) {
+        for (int i = lowestPriorityIndex; i < this.last; i++) {
             this.elements[i] = this.elements[i + 1];
         }
 
@@ -153,6 +153,25 @@ public class PriorityQueue<X> implements Cloneable {
             this.resizeDown();
 
         return value;
+    }
+
+    public int size() {
+        return this.last + 1;
+    }
+
+
+    private int findLowestPriorityIndex() {
+        int lowestPriority = Integer.MAX_VALUE;
+        int index = -1;
+
+        for (int i = 0; i <= this.last; i++) {
+            if (this.elements[i].priority < lowestPriority) {
+                lowestPriority = this.elements[i].priority;
+                index = i;
+            }
+        }
+
+        return index;
     }
 
     /**

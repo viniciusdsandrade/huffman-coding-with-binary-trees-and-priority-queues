@@ -1,13 +1,13 @@
 package Tree.tests;
 
-import Tree.ArvoreBinaria;
+import Tree.BinaryTree;
 
 public class TestEqualsAndHashCode {
 
     public static void main(String[] args) {
         System.out.println("### Testes da Árvore Binária de Busca ###");
         System.out.println("\n1. Inserindo elementos na árvore:");
-        ArvoreBinaria<Integer> arvore1 = new ArvoreBinaria<>();
+        BinaryTree<Integer> arvore1 = new BinaryTree<>();
         arvore1.inserir(30);
         arvore1.inserir(70);
         arvore1.inserir(20);
@@ -17,7 +17,7 @@ public class TestEqualsAndHashCode {
         arvore1.inserir(50);
         System.out.println("Árvore 1: " + arvore1);
 
-        ArvoreBinaria<Integer> arvore2 = new ArvoreBinaria<>();
+        BinaryTree<Integer> arvore2 = new BinaryTree<>();
         arvore2.inserir(30);
         arvore2.inserir(70);
         arvore2.inserir(20);

@@ -11,16 +11,16 @@ import static ShallowOrDeepCopy.ShallowOrDeepCopy.verifyAndCopy;
  *
  * @param <X> O tipo de dado armazenado no nó, deve implementar a interface Comparable.
  */
-public class No<X extends Comparable<X>> implements Cloneable, Comparable<No<X>> {
+public class Node<X extends Comparable<X>> implements Cloneable, Comparable<Node<X>> {
 
-    private No<X> esq;
+    private Node<X> esq;
     private X info;
-    private No<X> dir;
+    private Node<X> dir;
 
     /**
      * Construtor padrão que cria um nó vazio.
      */
-    public No() {
+    public Node() {
     }
 
     /**
@@ -29,7 +29,7 @@ public class No<X extends Comparable<X>> implements Cloneable, Comparable<No<X>>
      * @param info O valor a ser armazenado no nó, não pode ser nulo.
      * @throws IllegalArgumentException Se o valor fornecido for nulo.
      */
-    public No(X info) {
+    public Node(X info) {
         if (info == null) throw new IllegalArgumentException("Valor nulo");
         this.esq = null;
         this.info = info;
@@ -43,7 +43,7 @@ public class No<X extends Comparable<X>> implements Cloneable, Comparable<No<X>>
      * @param info O valor a ser armazenado no nó, não pode ser nulo.
      * @throws IllegalArgumentException Se o valor fornecido for nulo.
      */
-    public No(No<X> esq, X info) {
+    public Node(Node<X> esq, X info) {
         if (info == null) throw new IllegalArgumentException("Valor nulo");
         this.esq = esq;
         this.info = info;
@@ -57,7 +57,7 @@ public class No<X extends Comparable<X>> implements Cloneable, Comparable<No<X>>
      * @param dir A referência para o filho direito do nó.
      * @throws IllegalArgumentException Se o valor fornecido for nulo.
      */
-    public No(X info, No<X> dir) {
+    public Node(X info, Node<X> dir) {
         if (info == null) throw new IllegalArgumentException("Valor nulo");
         this.esq = null;
         this.info = info;
@@ -71,7 +71,7 @@ public class No<X extends Comparable<X>> implements Cloneable, Comparable<No<X>>
      * @param info O valor a ser armazenado no nó.
      * @param dir A referência para o filho direito do nó.
      */
-    public No(No<X> esq, X info, No<X> dir) {
+    public Node(Node<X> esq, X info, Node<X> dir) {
         this.esq = esq;
         this.info = info;
         this.dir = dir;
@@ -92,7 +92,7 @@ public class No<X extends Comparable<X>> implements Cloneable, Comparable<No<X>>
      *
      * @return A referência para o filho esquerdo do nó.
      */
-    public No<X> getEsquerda() {
+    public Node<X> getEsquerda() {
         return esq;
     }
 
@@ -101,7 +101,7 @@ public class No<X extends Comparable<X>> implements Cloneable, Comparable<No<X>>
      *
      * @return A referência para o filho direito do nó.
      */
-    public No<X> getDireita() {
+    public Node<X> getDireita() {
         return dir;
     }
 
@@ -121,7 +121,7 @@ public class No<X extends Comparable<X>> implements Cloneable, Comparable<No<X>>
      *
      * @param esquerda A nova referência para o filho esquerdo do nó.
      */
-    public void setEsquerda(No<X> esquerda) {
+    public void setEsquerda(Node<X> esquerda) {
         this.esq = esquerda;
     }
 
@@ -130,7 +130,7 @@ public class No<X extends Comparable<X>> implements Cloneable, Comparable<No<X>>
      *
      * @param direita A nova referência para o filho direito do nó.
      */
-    public void setDireita(No<X> direita) {
+    public void setDireita(Node<X> direita) {
         this.dir = direita;
     }
 
@@ -140,7 +140,7 @@ public class No<X extends Comparable<X>> implements Cloneable, Comparable<No<X>>
      * @param valor O valor a ser buscado.
      * @return O nó que contém o valor, ou nulo se o valor não for encontrado.
      */
-    public No<X> buscarNo(X valor) {
+    public Node<X> buscarNo(X valor) {
         if (valor == null) return null;
         int comparacao = valor.compareTo(this.info);
         if (comparacao == 0) return this;
@@ -207,18 +207,18 @@ public class No<X extends Comparable<X>> implements Cloneable, Comparable<No<X>>
      * @throws IllegalArgumentException Se o nó modelo fornecido for nulo.
      */
     @SuppressWarnings("unchecked")
-    public No(No<X> modelo) {
+    public Node(Node<X> modelo) {
         if (modelo == null) throw new IllegalArgumentException("Modelo nulo");
 
         this.info = (X) verifyAndCopy(modelo.getValor());
 
         if (modelo.esq != null)
-            this.esq = new No<>(modelo.esq);
+            this.esq = new Node<>(modelo.esq);
         else
             this.esq = null;
 
         if (modelo.dir != null)
-            this.dir = new No<>(modelo.dir);
+            this.dir = new Node<>(modelo.dir);
         else
             this.dir = null;
     }
@@ -230,9 +230,9 @@ public class No<X extends Comparable<X>> implements Cloneable, Comparable<No<X>>
      */
     @Override
     public Object clone() {
-        No<X> clone = null;
+        Node<X> clone = null;
         try {
-            clone = new No<>(this);
+            clone = new Node<>(this);
         } catch (Exception ignored) {
         }
         return clone;
@@ -248,7 +248,7 @@ public class No<X extends Comparable<X>> implements Cloneable, Comparable<No<X>>
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        No<?> that = (No<?>) o;
+        Node<?> that = (Node<?>) o;
         return Objects.equals(this.info, that.info) &&
                 equals(this.esq, that.esq) &&
                 equals(this.dir, that.dir);
@@ -257,16 +257,16 @@ public class No<X extends Comparable<X>> implements Cloneable, Comparable<No<X>>
     /**
      * Método auxiliar para verificar a igualdade entre dois nós, recursivamente.
      *
-     * @param no1 O primeiro nó a ser comparado.
-     * @param no2 O segundo nó a ser comparado.
+     * @param node1 O primeiro nó a ser comparado.
+     * @param node2 O segundo nó a ser comparado.
      * @return True se os nós forem iguais, False caso contrário.
      */
-    private boolean equals(No<X> no1, No<?> no2) {
-        if (no1 == no2) return true;
-        if (no1 == null || no2 == null) return false;
-        if (!no1.info.equals(no2.info)) return false;
-        return equals(no1.esq, no2.esq) &&
-                equals(no1.dir, no2.dir);
+    private boolean equals(Node<X> node1, Node<?> node2) {
+        if (node1 == node2) return true;
+        if (node1 == null || node2 == null) return false;
+        if (!node1.info.equals(node2.info)) return false;
+        return equals(node1.esq, node2.esq) &&
+               equals(node1.dir, node2.dir);
     }
 
     /**
@@ -282,16 +282,16 @@ public class No<X extends Comparable<X>> implements Cloneable, Comparable<No<X>>
     /**
      * Método auxiliar para calcular o código hash de um nó, recursivamente.
      *
-     * @param no O nó para o qual o código hash deve ser calculado.
+     * @param node O nó para o qual o código hash deve ser calculado.
      * @return O código hash do nó.
      */
-    private int hashCode(No<X> no) {
+    private int hashCode(Node<X> node) {
         final int prime = 31;
         int hash = 1;
-        if (no == null) return 0;
-        hash *= prime + ((no.info == null) ? 0 : no.info.hashCode());
-        hash *= prime + hashCode(no.esq);
-        hash *= prime + hashCode(no.dir);
+        if (node == null) return 0;
+        hash *= prime + ((node.info == null) ? 0 : node.info.hashCode());
+        hash *= prime + hashCode(node.esq);
+        hash *= prime + hashCode(node.dir);
         if (hash < 0) hash = -hash;
         return hash;
     }
@@ -358,7 +358,7 @@ public class No<X extends Comparable<X>> implements Cloneable, Comparable<No<X>>
      * @throws NullPointerException Se o outro nó for nulo.
      */
     @Override
-    public int compareTo(No<X> other) {
+    public int compareTo(Node<X> other) {
         if (other == null) throw new NullPointerException("Cannot compare with null node");
         return this.info.compareTo(other.info);
     }

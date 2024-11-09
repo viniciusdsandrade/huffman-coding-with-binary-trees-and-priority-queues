@@ -1,10 +1,10 @@
 package Tree.tests;
 
-import Tree.ArvoreBinaria;
+import Tree.BinaryTree;
 
 public class TestCloneAndCopyConstructor {
     public static void main(String[] args) {
-        ArvoreBinaria<Integer> arvore1 = new ArvoreBinaria<>();
+        BinaryTree<Integer> arvore1 = new BinaryTree<>();
         arvore1.inserir(30);
         arvore1.inserir(70);
         arvore1.inserir(20);
@@ -15,12 +15,12 @@ public class TestCloneAndCopyConstructor {
         System.out.println("Árvore 1: " + arvore1);
 
         // Testando o construtor de cópia
-        ArvoreBinaria<Integer> arvore2 = new ArvoreBinaria<>(arvore1);
+        BinaryTree<Integer> arvore2 = new BinaryTree<>(arvore1);
         System.out.println("Árvore 1 com construtor de cópia: " + arvore2);
 
         // Testando o metodo clone
         @SuppressWarnings("unchecked")
-        ArvoreBinaria<Integer> arvore3 = (ArvoreBinaria<Integer>) arvore1.clone();
+        BinaryTree<Integer> arvore3 = (BinaryTree<Integer>) arvore1.clone();
         System.out.println("Árvore 1 com método clone: " + arvore3);
 
         // Agora vamos fazer alterações na árvore 1 e verificar se as alterações
