@@ -1,14 +1,12 @@
-import Tree.Node;
-
 import static java.lang.Integer.compare;
 
 public class HuffmanNode implements Comparable<HuffmanNode> {
-    public char character; // Character represented (only for leaf nodes)
-    public int frequency;  // Character frequency or sum of frequencies (for internal nodes)
-    public HuffmanNode leftNode;  // Left child
-    public HuffmanNode rightNode; // Right child
+    public char character;
+    public int frequency;
+    public HuffmanNode leftNode;
+    public HuffmanNode rightNode;
 
-    // Constructor for leaf nodes
+    // Construtor para nós folha
     public HuffmanNode(char character, int frequency) {
         this.character = character;
         this.frequency = frequency;
@@ -16,9 +14,9 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
         this.rightNode = null;
     }
 
-    // Constructor for internal nodes
+    // Construtor para nós internos
     public HuffmanNode(int frequency, HuffmanNode leftNode, HuffmanNode rightNode) {
-        this.character = '\0'; // Indicator of internal node
+        this.character = '\0'; // Indicador de nó interno
         this.frequency = frequency;
         this.leftNode = leftNode;
         this.rightNode = rightNode;
