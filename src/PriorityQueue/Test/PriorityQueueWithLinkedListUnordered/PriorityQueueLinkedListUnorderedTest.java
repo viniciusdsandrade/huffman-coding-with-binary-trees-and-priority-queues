@@ -5,7 +5,7 @@ import PriorityQueue.PriorityQueueLinkedListUnordered;
 import java.util.EmptyStackException;
 
 public class PriorityQueueLinkedListUnorderedTest {
-    public static void main(String[] args) {
+    public static void main(String[] ignoredArgs) throws CloneNotSupportedException {
         System.out.println("===== Iniciando Testes da PriorityQueueLinkedListUnordered =====\n");
 
         System.out.println("1. Teste do Construtor Padrão e Método isEmpty");

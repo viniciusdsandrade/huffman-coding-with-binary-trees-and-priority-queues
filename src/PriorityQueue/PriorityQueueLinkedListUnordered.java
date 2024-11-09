@@ -50,7 +50,7 @@ public class PriorityQueueLinkedListUnordered<X> implements Cloneable {
 
         @Override
         @SuppressWarnings("MethodDoesntCallSuperMethod")
-        protected Item<X> clone() {
+        protected Item<X> clone() throws CloneNotSupportedException {
             Item<X> clone = null;
             try {
                 clone = new Item<>(this);
@@ -60,7 +60,7 @@ public class PriorityQueueLinkedListUnordered<X> implements Cloneable {
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public final boolean equals(Object obj) {
             if (this == obj) return true;
             if (obj == null) return false;
             if (this.getClass() != obj.getClass()) return false;
@@ -72,7 +72,7 @@ public class PriorityQueueLinkedListUnordered<X> implements Cloneable {
         }
 
         @Override
-        public int hashCode() {
+        public final int hashCode() {
             final int prime = 31;
             int hash = 1;
 
@@ -85,7 +85,7 @@ public class PriorityQueueLinkedListUnordered<X> implements Cloneable {
         }
 
         @Override
-        public String toString() {
+        public final String toString() {
             return "(" + value + ", " + priority + ")";
         }
     }
@@ -216,7 +216,7 @@ public class PriorityQueueLinkedListUnordered<X> implements Cloneable {
      */
     @Override
     @SuppressWarnings({"MethodDoesntCallSuperMethod", "unchecked"})
-    public Object clone() {
+    public Object clone() throws CloneNotSupportedException {
         PriorityQueueLinkedListUnordered<X> clone = (PriorityQueueLinkedListUnordered<X>) new PriorityQueueLinkedListUnordered<>();
         LinkedListUnordered<Item<X>>.Node current = this.list.getPrimeiro();
         while (current != null) {

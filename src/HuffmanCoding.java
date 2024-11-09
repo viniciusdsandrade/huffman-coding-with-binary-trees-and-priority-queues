@@ -1,17 +1,21 @@
 import java.io.*;
-import java.util.*;
+
+import PriorityQueue.PriorityQueue;
+import HashMap.HashMapLinkedListUnordered;
+import LinkedList.Unordered.LinkedListUnordered;
 
 import static java.lang.Integer.toBinaryString;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
 
 public class HuffmanCoding {
-    private final HashMap<Character, String> huffmanCodes;
+    private final HashMapLinkedListUnordered<Character, String> huffmanCodes;
     private HuffmanNode huffmanTreeRoot;
-    private HashMap<Character, Integer> frequencies;
+    private HashMapLinkedListUnordered<Character, Integer> frequencies;
 
     public HuffmanCoding() {
-        huffmanCodes = new HashMap<>();
-        frequencies = new HashMap<>();
+        huffmanCodes = new HashMapLinkedListUnordered<>();
+        frequencies = new HashMapLinkedListUnordered<>();
     }
 
     public void compress(String inputFilePath, String outputFilePath) throws IOException {
@@ -35,10 +39,17 @@ public class HuffmanCoding {
         // Escreva o arquivo compactado
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(outputFilePath));
         dos.writeInt(frequencies.size());
-        for (Map.Entry<Character, Integer> entry : frequencies.entrySet()) {
-            dos.writeChar(entry.getKey());
-            dos.writeInt(entry.getValue());
+        LinkedListUnordered<Character> keys = frequencies.keySet();
+        LinkedListUnordered<Character>.Node currentKey = keys.getPrimeiro();
+
+        while (currentKey != null) {
+            char character = currentKey.elemento;
+            int frequency = frequencies.get(character);
+            dos.writeChar(character);
+            dos.writeInt(frequency);
+            currentKey = currentKey.proximo;
         }
+
         dos.writeInt(numberOfBits); // Escreve o número de bits significativos
         dos.write(encodedBytes);    // Escreve os bytes codificados
         dos.close();
@@ -51,8 +62,9 @@ public class HuffmanCoding {
 
         // Leitura das frequências para reconstruir a árvore
         int size = dis.readInt(); // Número de caracteres únicos
-        frequencies = new HashMap<>();
+        frequencies = new HashMapLinkedListUnordered<>();
         int totalCharacters = 0; // Variável para contar o total de caracteres
+
         for (int i = 0; i < size; i++) {
             char character = dis.readChar();
             int frequency = dis.readInt();
@@ -102,42 +114,58 @@ public class HuffmanCoding {
     private void calculateFrequencies(String text) {
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
-            frequencies.put(c, frequencies.getOrDefault(c, 0) + 1);
+            Integer currentFreq = frequencies.get(c);
+            frequencies.put(c, currentFreq == null ? 1 : currentFreq + 1);
         }
+
         // Debug: Imprimir frequências
         System.out.println("Frequências dos caracteres:");
-        for (Map.Entry<Character, Integer> entry : frequencies.entrySet()) {
-            System.out.println("'" + entry.getKey() + "': " + entry.getValue());
+        LinkedListUnordered<Character> keys = frequencies.keySet();
+        LinkedListUnordered<Character>.Node currentKey = keys.getPrimeiro();
+
+        while (currentKey != null) {
+            char character = currentKey.elemento;
+            int freq = frequencies.get(character);
+            System.out.println("'" + character + "': " + freq);
+            currentKey = currentKey.proximo;
         }
     }
 
     // Construção da árvore de Huffman
     private void buildHuffmanTree() {
-        PriorityQueue<HuffmanNode> priorityQueue = new PriorityQueue<>();
+        // Inicializa a fila de prioridade personalizada
+        PriorityQueue<HuffmanNode> priorityQueue = new PriorityQueue<HuffmanNode>();
 
-        // Criação dos 'nós' folha e inserção na fila de prioridade
-        Set<Character> keys = frequencies.keySet();
-        for (Character c : keys) {
-            if (c != null) {
-                int freq = frequencies.get(c);
-                HuffmanNode huffmanNode = new HuffmanNode(c, freq);
-                priorityQueue.offer(huffmanNode);
-            }
+        // Criação dos 'nós' folha e inserção na fila de prioridade com a frequência como prioridade
+        LinkedListUnordered<Character> keys = frequencies.keySet();
+        LinkedListUnordered<Character>.Node currentKey = keys.getPrimeiro();
+
+        while (currentKey != null) {
+            char c = currentKey.elemento;
+            int freq = frequencies.get(c);
+            HuffmanNode huffmanNode = new HuffmanNode(c, freq);
+            priorityQueue.enqueue(huffmanNode, freq); // Insere com a frequência como prioridade
+            currentKey = currentKey.proximo;
         }
 
-        // Construção da árvore
+        // Construção da árvore de Huffman
         while (priorityQueue.size() > 1) {
-            HuffmanNode leftHuffmanNode = priorityQueue.poll();
-            HuffmanNode rightHuffmanNode = priorityQueue.poll();
+            // Remove os dois nós com as menores frequências
+            HuffmanNode leftHuffmanNode = priorityQueue.dequeue();
+            HuffmanNode rightHuffmanNode = priorityQueue.dequeue();
 
-            int combinedFreq = leftHuffmanNode.frequency + (rightHuffmanNode != null ? rightHuffmanNode.frequency : 0);
+            // Combina as frequências dos dois nós removidos
+            int combinedFreq = leftHuffmanNode.frequency + rightHuffmanNode.frequency;
             HuffmanNode parentHuffmanNode = new HuffmanNode(combinedFreq, leftHuffmanNode, rightHuffmanNode);
-            priorityQueue.offer(parentHuffmanNode);
+
+            // Insere o nó pai de volta na fila de prioridade com a frequência combinada
+            priorityQueue.enqueue(parentHuffmanNode, combinedFreq);
         }
 
         // A raiz da árvore é o único nó restante na fila
-        if (!priorityQueue.isEmpty()) huffmanTreeRoot = priorityQueue.poll();
+        if (priorityQueue.size() == 1) huffmanTreeRoot = priorityQueue.dequeue();
     }
+
 
     // Geração dos códigos de Huffman a partir da árvore
     private void generateCodes(HuffmanNode node, String code) {
@@ -159,11 +187,8 @@ public class HuffmanCoding {
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             String code = huffmanCodes.get(c);
-            if (code != null) {
-                sb.append(code);
-            } else {
-                throw new IllegalArgumentException("Caracter não encontrado nos códigos de Huffman: " + c);
-            }
+            if (code != null) sb.append(code);
+            else throw new IllegalArgumentException("Caracter não encontrado nos códigos de Huffman: " + c);
         }
         // Debug: Imprimir texto codificado
         System.out.println("Texto Codificado: " + sb);
@@ -185,17 +210,14 @@ public class HuffmanCoding {
             };
 
             // Se um nó folha for alcançado
-            if ((current != null ? current.leftNode : null) == null && Objects.requireNonNull(current).rightNode == null) {
+            if (requireNonNull(current).leftNode == null && current.rightNode == null) {
                 sb.append(current.character);
                 current = root;
 
                 // Verifica se alcançou o número esperado de caracteres
-                if (sb.length() == expectedLength) {
-                    break;
-                }
+                if (sb.length() == expectedLength) break;
             }
         }
-
         return sb.toString();
     }
 
@@ -206,8 +228,6 @@ public class HuffmanCoding {
             String byteString = String.format("%8s", toBinaryString(b & 0xFF)).replace(' ', '0');
             sb.append(byteString);
         }
-        // Debug: Imprimir string de bits
-        //System.out.println("String de Bits Decodificada: " + sb);
         return sb.toString();
     }
 }

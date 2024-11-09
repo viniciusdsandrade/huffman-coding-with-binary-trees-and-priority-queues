@@ -16,9 +16,6 @@ public class PriorityQueueBinarySearchTree<X extends Comparable<X>> implements C
     /**
      * Classe interna Item que representa um elemento com sua prioridade.
      */
-    /**
-     * Classe interna Item que representa um elemento com sua prioridade.
-     */
     private class Item implements Comparable<Item>, Cloneable {
         private X elemento;
         private int prioridade;

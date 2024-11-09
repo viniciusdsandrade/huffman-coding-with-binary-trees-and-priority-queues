@@ -18,11 +18,6 @@ public class HashMapLinkedListUnordered<K, V> implements Cloneable {
             this.value = value;
         }
 
-        // Getters e setters opcionais
-        public K getKey() {
-            return key;
-        }
-
         @SuppressWarnings("unchecked")
         public V getValue() {
             return (V) verifyAndCopy(value); // Retorna uma cópia profunda do valor

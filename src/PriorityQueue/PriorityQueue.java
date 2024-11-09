@@ -1,10 +1,12 @@
 package PriorityQueue;
 
 import java.util.EmptyStackException;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import static ShallowOrDeepCopy.ShallowOrDeepCopy.verifyAndCopy;
-import static java.lang.Math.round;
+import static java.lang.Integer.MAX_VALUE;
+import static java.lang.Integer.MIN_VALUE;
 import static java.lang.System.arraycopy;
 
 public class PriorityQueue<X> implements Cloneable {
@@ -41,7 +43,7 @@ public class PriorityQueue<X> implements Cloneable {
 
         @Override
         @SuppressWarnings({"CloneNotSupportedException", "MethodDoesntCallSuperMethod"})
-        protected Item<X> clone() {
+        protected Item<X> clone() throws CloneNotSupportedException {
             Item<X> clone = null;
             try {
                 clone = new Item<>(this);
@@ -135,25 +137,32 @@ public class PriorityQueue<X> implements Cloneable {
      * @return The value of the removed element.
      */
     public X dequeue() {
-        if (this.isEmpty()) throw new EmptyStackException();
+        if (isEmpty()) throw new NoSuchElementException("PriorityQueue is empty");
 
-        int lowestPriorityIndex = findLowestPriorityIndex();
-        X value = this.elements[lowestPriorityIndex].value;
-
-        // Shift elements to fill the gap
-        for (int i = lowestPriorityIndex; i < this.last; i++) {
-            this.elements[i] = this.elements[i + 1];
+        // Encontra o índice do elemento com a menor prioridade
+        int minIndex = 0;
+        for (int i = 1; i <= last; i++) {
+            if (elements[i].priority < elements[minIndex].priority) {
+                minIndex = i;
+            }
         }
 
-        this.elements[this.last] = null;
-        this.last--;
+        // Remove e retorna o elemento com a menor prioridade
+        X value = elements[minIndex].value;
 
-        if (this.elements.length > this.initialSize &&
-            this.last + 1 <= round((float) this.elements.length / 4))
-            this.resizeDown();
+        // Desloca os elementos para preencher o espaço vazio
+        for (int i = minIndex; i < last; i++) elements[i] = elements[i + 1];
+
+        elements[last] = null;
+        last--;
+
+        // Opcional: Redimensiona para baixo se necessário
+        if (elements.length > initialSize && last + 1 <= Math.round((float) elements.length / 4))
+            resizeDown();
 
         return value;
     }
+
 
     public int size() {
         return this.last + 1;
@@ -161,7 +170,7 @@ public class PriorityQueue<X> implements Cloneable {
 
 
     private int findLowestPriorityIndex() {
-        int lowestPriority = Integer.MAX_VALUE;
+        int lowestPriority = MAX_VALUE;
         int index = -1;
 
         for (int i = 0; i <= this.last; i++) {
@@ -181,7 +190,7 @@ public class PriorityQueue<X> implements Cloneable {
      * @return The index of the highest priority element.
      */
     private int findHighestPriorityIndex() {
-        int highestPriority = Integer.MIN_VALUE;
+        int highestPriority = MIN_VALUE;
         int index = -1;
 
         for (int i = 0; i <= this.last; i++) {
@@ -244,7 +253,7 @@ public class PriorityQueue<X> implements Cloneable {
 
     // Copy constructor
     @SuppressWarnings("unchecked")
-    public PriorityQueue(PriorityQueue<X> model) {
+    public PriorityQueue(PriorityQueue<X> model) throws CloneNotSupportedException {
         if (model == null) throw new IllegalArgumentException("Model is missing");
 
         this.initialSize = model.initialSize;
@@ -267,7 +276,7 @@ public class PriorityQueue<X> implements Cloneable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null) return false;
         if (this.getClass() != obj.getClass()) return false;
@@ -278,15 +287,14 @@ public class PriorityQueue<X> implements Cloneable {
         if (this.last != other.last) return false;
 
         for (int i = 0; i <= this.last; i++)
-            if (!this.elements[i].value.equals(other.elements[i].value) ||
-                this.elements[i].priority != other.elements[i].priority)
+            if (!this.elements[i].value.equals(other.elements[i].value) || this.elements[i].priority != other.elements[i].priority)
                 return false;
 
         return true;
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         final int prime = 31;
         int hash = 1;
 
@@ -304,7 +312,7 @@ public class PriorityQueue<X> implements Cloneable {
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         if (this.isEmpty()) return "[]";
         StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i <= this.last; i++) {
