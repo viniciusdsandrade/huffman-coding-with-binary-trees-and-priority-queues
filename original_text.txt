@@ -1,0 +1,1 @@
+Este é um exemplo de texto para testar a compressão e descompressão usando Huffman Coding.

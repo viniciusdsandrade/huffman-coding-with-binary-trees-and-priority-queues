@@ -2,33 +2,53 @@ import static java.io.File.separator;
 import static java.lang.System.in;
 import static java.nio.file.Files.readAllBytes;
 
-/// ## main
+/// # HuffmanApp
 ///
-/// O metodo 'main' é o ponto de entrada da aplicação. Ele apresenta um menu de operações ao usuário e executa as ações selecionadas.
+/// A classe `HuffmanApp` fornece funcionalidades para compactar e descompactar arquivos e diretórios utilizando o algoritmo de **Codificação de Huffman**.
+/// Ela permite a manipulação recursiva de estruturas de diretórios e oferece uma interface de linha de comando para interagir com o usuário.
 ///
-/// ### Parâmetros
-/// - 'ignoredArgs': Array de strings que pode receber argumentos de linha de comando (não utilizados neste caso).
+/// ## Funcionalidades
+/// - **Compactação:** Compacta arquivos ou diretórios, preservando a estrutura de diretórios original.
+/// - **Descompactação:** Descompacta arquivos `.huff` em um diretório especificado, também preservando a estrutura.
+/// - **Comparação:** Compara Opcionalmente os arquivos descompactados com os originais para garantir a integridade dos dados.
 ///
-/// ### Fluxo de Operações
-/// 1. Exibe o menu de operações utilizando **Text Blocks** para melhor legibilidade.
-/// 2. Recebe a opção selecionada pelo usuário.
-/// 3. Executa a ação correspondente:
-///    - **1:** Chama o metodo 'compactar' para iniciar o processo de compactação.
-///    - **2:** Chama o metodo 'descompactar' para iniciar o processo de descompactação.
-///    - **3:** Encerra o programa.
-///    - **Default:** Informa ao usuário que a opção é inválida e solicita uma nova tentativa.
-///
-/// ### Exceções
-/// Nenhuma exceção lançada diretamente neste metodo; exceções são tratadas nos métodos chamados.
+/// ## Uso
+/// Execute o programa e siga as instruções no menu para escolher entre compactar, descompactar ou sair.
+// Variável para armazenar o caminho base dependendo do ambiente selecionado
+private static String resultBasePath;
+
 public static void main(String[] ignoredArgs) {
     // Inicializa o Scanner para receber entradas do usuário a partir da entrada padrão
     Scanner scanner = new Scanner(in);
     // Variável de controle para manter o loop do menu ativo
     boolean continuar = true;
 
+    // Menu para selecionar o ambiente
+    while (true) {
+        System.out.print("""
+                \s
+                 === Seleção de Ambiente ===
+                 1. Desktop Vini
+                 2. Laptop Vini
+                 Selecione o ambiente (1-2):
+                """);
+
+        String ambienteOpcao = scanner.nextLine().trim();
+
+        if (ambienteOpcao.equals("1")) {
+            configurarAmbienteDesktopVini();
+            break;
+        } else if (ambienteOpcao.equals("2")) {
+            configurarAmbienteLaptopVini();
+            break;
+        } else {
+            System.err.println("Opção inválida. Por favor, tente novamente.");
+        }
+    }
+
     // Loop principal que continua executando enquanto 'continuar' for verdadeiro
     while (continuar) {
-        // Exibição do menu utilizando Text Blocks para melhor legibilidade
+        // Exibição do menu de operações utilizando Text Blocks para melhor legibilidade
         System.out.print("""
                 \s
                  === Menu de Operações ===
@@ -57,6 +77,34 @@ public static void main(String[] ignoredArgs) {
     scanner.close();
 }
 
+/// ## configurarAmbienteDesktopVini
+///
+/// Configura os caminhos base para o ambiente 'desktop_vini'.
+///
+/// ### Fluxo de Operações
+/// 1. Define 'resultBasePath' para o ambiente desktop.
+///
+/// ### Exceções
+/// Nenhuma exceção lançada diretamente neste metodo.
+private static void configurarAmbienteDesktopVini() {
+    resultBasePath = "C:\\Users\\Pichau\\Desktop\\huffman-coding-with-binary-trees-and-priority-queues\\result";
+    System.out.println("Ambiente 'desktop_vini' selecionado.");
+}
+
+/// ## configurarAmbienteLaptopVini
+///
+/// Configura os caminhos base para o ambiente 'laptop_vini'.
+///
+/// ### Fluxo de Operações
+/// 1. Define 'resultBasePath' para o ambiente laptop.
+///
+/// ### Exceções
+/// Nenhuma exceção lançada diretamente neste metodo.
+private static void configurarAmbienteLaptopVini() {
+    resultBasePath = "C:\\Users\\vinic\\OneDrive\\Área de Trabalho\\huffman-coding-with-binary-trees-and-priority-queues\\result";
+    System.out.println("Ambiente 'laptop_vini' selecionado.");
+}
+
 /// ## compactar
 ///
 /// Este metodo lida com o processo de compactação de arquivos ou diretórios. Ele solicita ao usuário o caminho do arquivo/diretório a ser compactado, verifica a existência do caminho, define o diretório de saída, inicializa a classe 'HuffmanCoding' e processa a compactação de forma recursiva.
@@ -67,7 +115,7 @@ public static void main(String[] ignoredArgs) {
 /// ### Fluxo de Operações
 /// 1. Solicita ao usuário o caminho completo do arquivo ou diretório a ser compactado.
 /// 2. Verifica se o caminho fornecido existe.
-/// 3. Define o diretório de saída para os arquivos compactados.
+/// 3. Define o diretório de saída para os arquivos compactados com base no ambiente selecionado.
 /// 4. Inicializa a classe 'HuffmanCoding' responsável pela compactação.
 /// 5. Determina o 'basePath' para preservar a estrutura de diretórios.
 /// 6. Define um diretório específico dentro do diretório de saída para armazenar os arquivos compactados.
@@ -90,8 +138,8 @@ private static void compactar(Scanner scanner) {
             return; // Encerra o metodo
         }
 
-        // Define o diretório de saída para os arquivos compactados
-        String outputDirPath = "C:\\Users\\vinic\\OneDrive\\Área de Trabalho\\huffman-coding-with-binary-trees-and-priority-queues\\result";
+        // Define o diretório de saída para os arquivos compactados com base no ambiente selecionado
+        String outputDirPath = resultBasePath;
         File outputDir = new File(outputDirPath); // Cria um objeto File para o diretório de saída
         if (!outputDir.exists()) { // Verifica se o diretório de saída existe
             if (outputDir.mkdirs()) { // Tenta criar o diretório de saída
@@ -156,7 +204,7 @@ private static void compactar(Scanner scanner) {
 /// ### Fluxo de Operações
 /// 1. Solicita ao usuário o caminho completo do diretório contendo arquivos '.huff' a serem descompactados.
 /// 2. Verifica se o caminho fornecido existe e é um diretório válido.
-/// 3. Define o diretório de saída para os arquivos descompactados.
+/// 3. Define o diretório de saída para os arquivos descompactados com base no ambiente selecionado.
 /// 4. Inicializa a classe 'HuffmanCoding' responsável pela descompactação.
 /// 5. Define um subdiretório dentro do diretório de saída para manter a organização dos arquivos descompactados.
 /// 6. Processa todos os arquivos '.huff' no diretório de entrada de forma recursiva.
@@ -179,8 +227,8 @@ private static void descompactar(Scanner scanner) {
             return; // Encerra o metodo
         }
 
-        // Define o diretório de saída para os arquivos descompactados
-        String outputDirPath = "C:\\Users\\vinic\\OneDrive\\Área de Trabalho\\huffman-coding-with-binary-trees-and-priority-queues\\result";
+        // Define o diretório de saída para os arquivos descompactados com base no ambiente selecionado
+        String outputDirPath = resultBasePath;
         File outputDir = new File(outputDirPath); // Cria um objeto File para o diretório de saída
         if (!outputDir.exists()) { // Verifica se o diretório de saída existe
             if (outputDir.mkdirs()) { // Tenta criar o diretório de saída
@@ -541,7 +589,3 @@ private static boolean compareDirectories(File originalDir, File decompressedDir
 
     return todasIguais; // Retorna o resultado final da comparação
 }
-
-
-
-
