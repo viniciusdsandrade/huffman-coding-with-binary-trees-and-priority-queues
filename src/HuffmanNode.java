@@ -26,7 +26,6 @@ public class HuffmanNode implements Comparable<HuffmanNode>, Cloneable {
         this.rightNode = rightNode;
     }
 
-
     public HuffmanNode(HuffmanNode node) {
         this.byteValue = node.byteValue;
         this.frequency = node.frequency;
@@ -48,7 +47,8 @@ public class HuffmanNode implements Comparable<HuffmanNode>, Cloneable {
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
+        if (o == null) return false;
+        if (this.getClass() != o.getClass()) return false;
 
         HuffmanNode that = (HuffmanNode) o;
 
@@ -63,10 +63,10 @@ public class HuffmanNode implements Comparable<HuffmanNode>, Cloneable {
         final int prime = 31;
         int hash = 1;
 
-        hash = prime * hash + byteValue;
-        hash = prime * hash + frequency;
-        hash = prime * hash + (leftNode == null ? 0 : leftNode.hashCode());
-        hash = prime * hash + (rightNode == null ? 0 : rightNode.hashCode());
+        hash *= prime + byteValue;
+        hash *= prime + frequency;
+        hash *= prime + (leftNode == null ? 0 : leftNode.hashCode());
+        hash *= prime + (rightNode == null ? 0 : rightNode.hashCode());
 
         if (hash < 0) hash = -hash;
 
