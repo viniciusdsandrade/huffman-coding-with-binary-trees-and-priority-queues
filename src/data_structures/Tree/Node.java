@@ -255,7 +255,7 @@ public class Node<X extends Comparable<X>> implements Cloneable, Comparable<Node
     }
 
     /**
-     * Método auxiliar para verificar a igualdade entre dois nós, recursivamente.
+     * metodo auxiliar para verificar a igualdade entre dois nós, recursivamente.
      *
      * @param node1 O primeiro nó a ser comparado.
      * @param node2 O segundo nó a ser comparado.
@@ -280,7 +280,7 @@ public class Node<X extends Comparable<X>> implements Cloneable, Comparable<Node
     }
 
     /**
-     * Método auxiliar para calcular o código hash de um nó, recursivamente.
+     * metodo auxiliar para calcular o código hash de um nó, recursivamente.
      *
      * @param node O nó para o qual o código hash deve ser calculado.
      * @return O código hash do nó.
@@ -307,7 +307,7 @@ public class Node<X extends Comparable<X>> implements Cloneable, Comparable<Node
     }
 
     /**
-     * Método auxiliar recursivo para construir a representação em string da árvore.
+     * metodo auxiliar recursivo para construir a representação em string da árvore.
      *
      * @param nivel O nível atual na árvore (usado para gerar a indentação).
      * @return A representação em string da subárvore com raiz neste nó.

@@ -1,4 +1,6 @@
 import java.io.*;
+import java.nio.file.Path;
+import java.util.Arrays;
 
 import data_structures.PriorityQueue.PriorityQueue;
 import data_structures.HashMap.HashMapLinkedListUnordered;
@@ -11,29 +13,34 @@ import static java.nio.file.Files.write;
 
 /// # HuffmanCoding
 ///
-/// A classe 'HuffmanCoding' fornece funcionalidades para **compactar** e **descompactar** arquivos utilizando o algoritmo de **Codificação de Huffman**. Ela utiliza estruturas de dados personalizadas, como 'PriorityQueue', 'HashMapLinkedListUnordered' e 'LinkedListUnordered', para gerenciar frequências e construir a árvore de Huffman.
+/// A classe `HuffmanCoding` fornece funcionalidades para **compactar** e **descompactar** arquivos utilizando o algoritmo de **Codificação de Huffman**. Ela utiliza estruturas de dados personalizadas, como `PriorityQueue`, `HashMapLinkedListUnordered` e `LinkedListUnordered`, para gerenciar frequências e construir a árvore de Huffman.
 ///
 /// ## Funcionalidades
-/// - **Compactação ('compress'):** Compacta um arquivo de entrada, gerando um arquivo '.huff' contendo os dados compactados e as informações de frequência necessárias para a descompactação.
-/// - **Descompactação ('decompress'):** Descompacta um arquivo '.huff', restaurando os dados originais.
-/// - **Comparação de Arquivos ('compareFiles', 'compareDescompressedWithOriginal', 'compareDirectories'):** Garante que a descompactação preservou a integridade dos dados originais.
+/// - **Compactação (`compress`):** Compacta um arquivo de entrada, gerando um arquivo `.huff` contendo os dados compactados e as informações de frequência necessárias para a descompactação.
+/// - **Descompactação (`decompress`):** Descompacta um arquivo `.huff`, restaurando os dados originais.
+/// - **Comparação de Arquivos (`compareFiles`, `compareDescompressedWithOriginal`, `compareDirectories`):** Garante que a descompactação preservou a integridade dos dados originais.
+///
+/// ## Estrutura Interna
+/// - **huffmanCodes:** Mapa que associa cada byte ao seu respectivo código de Huffman.
+/// - **huffmanTreeRoot:** Nó raiz da árvore de Huffman.
+/// - **frequencies:** Mapa que armazena a frequência de cada byte no arquivo.
 ///
 /// ## Uso
-/// Crie uma instância de 'HuffmanCoding' e utilize os métodos 'compress' e 'decompress' fornecendo os caminhos dos arquivos de entrada e saída.
+/// Crie uma instância de `HuffmanCoding` e utilize os metodos `compress` e `decompress` fornecendo os caminhos dos arquivos de entrada e saída.
 ///
 /// ### Exemplo
-/// '''java
+/// ```java
 /// HuffmanCoding huffman = new HuffmanCoding();
 /// huffman.compress("caminho/do/arquivo/original.txt", "caminho/do/arquivo/compactado.huff");
 /// huffman.decompress("caminho/do/arquivo/compactado.huff", "caminho/do/arquivo/restaurado.txt");
-///'''
+/// ```
 
 public class HuffmanCoding {
     /// ### Campos
     ///
-    /// - `huffmanCodes`: Mapa que associa cada byte ao seu respectivo código de Huffman.
-    /// - `huffmanTreeRoot`: Nó raiz da árvore de Huffman.
-    /// - `frequencies`: Mapa que armazena a frequência de cada byte no arquivo.
+    /// - **`huffmanCodes`:** Mapa que associa cada byte ao seu respectivo código de Huffman.
+    /// - **`huffmanTreeRoot`:** Nó raiz da árvore de Huffman.
+    /// - **`frequencies`:** Mapa que armazena a frequência de cada byte no arquivo.
     private final HashMapLinkedListUnordered<Byte, String> huffmanCodes;
     private HuffmanNode huffmanTreeRoot;
     private final HashMapLinkedListUnordered<Byte, Integer> frequencies;
@@ -43,11 +50,19 @@ public class HuffmanCoding {
     /// Construtor padrão que inicializa os mapas de códigos de Huffman e frequências.
     ///
     /// ### Fluxo de Operações
-    /// 1. Inicializa 'huffmanCodes' como uma nova instância de 'HashMapLinkedListUnordered'.
-    /// 2. Inicializa 'frequencies' como uma nova instância de 'HashMapLinkedListUnordered'.
+    /// 1. Inicializa `huffmanCodes` como uma nova instância de `HashMapLinkedListUnordered`.
+    /// 2. Inicializa `frequencies` como uma nova instância de `HashMapLinkedListUnordered`.
     ///
     /// ### Exceções
     /// Nenhuma exceção lançada diretamente neste construtor.
+    ///
+    /// ### Exemplo
+    /// ```java
+    /// HuffmanCoding huffman = new HuffmanCoding();
+    /// ```
+    ///
+    /// @see #compress(String, String)
+    /// @see #decompress(String, String)
     public HuffmanCoding() {
         huffmanCodes = new HashMapLinkedListUnordered<>();
         frequencies = new HashMapLinkedListUnordered<>();
@@ -58,8 +73,8 @@ public class HuffmanCoding {
     /// Compacta um arquivo utilizando o algoritmo de **Codificação de Huffman**.
     ///
     /// ### Parâmetros
-    /// - 'inputFilePath': caminho completo do arquivo original a ser compactado.
-    /// - 'outputFilePath': caminho completo onde o arquivo compactado será armazenado.
+    /// - **`inputFilePath`:** Caminho completo do arquivo original a ser compactado.
+    /// - **`outputFilePath`:** Caminho completo onde o arquivo compactado será armazenado.
     ///
     /// ### Fluxo de Operações
     /// 1. Lê todos os bytes do arquivo de entrada.
@@ -72,8 +87,19 @@ public class HuffmanCoding {
     /// 8. Escreve as informações de frequência e os dados codificados no arquivo de saída.
     ///
     /// ### Exceções
-    /// - 'IOException': lança exceção se ocorrer um erro durante a leitura ou escrita do arquivo.
-    /// - 'IllegalArgumentException': lança exceção se o arquivo de entrada estiver vazio.
+    /// - **`IOException`:** Lança exceção se ocorrer um erro durante a leitura ou escrita do arquivo.
+    /// - **`IllegalArgumentException`:** Lança exceção se o arquivo de entrada estiver vazio.
+    ///
+    /// ### Exemplo
+    /// ```java
+    /// HuffmanCoding huffman = new HuffmanCoding();
+    /// huffman.compress("caminho/do/arquivo/original.txt", "caminho/do/arquivo/compactado.huff");
+    /// ```
+    ///
+    /// @param inputFilePath  Caminho completo do arquivo original a ser compactado.
+    /// @param outputFilePath Caminho completo onde o arquivo compactado será armazenado.
+    /// @throws IOException Se ocorrer um erro durante a leitura ou escrita do arquivo.
+    /// @throws IllegalArgumentException Se o arquivo de entrada estiver vazio.
     public void compress(String inputFilePath, String outputFilePath) throws IOException {
         // Ler todos os bytes do arquivo de entrada
         byte[] data = readFile(inputFilePath);
@@ -130,15 +156,15 @@ public class HuffmanCoding {
 
     /// ## decompress
     ///
-    /// Descompacta um arquivo '.huff' utilizando o algoritmo de **Codificação de Huffman**.
+    /// Descompacta um arquivo `.huff` utilizando o algoritmo de **Codificação de Huffman**.
     ///
     /// ### Parâmetros
-    /// - 'inputFilePath': caminho completo do arquivo compactado a ser descompactado.
-    /// - 'outputFilePath': caminho completo onde o arquivo descompactado será armazenado.
+    /// - **`inputFilePath`:** Caminho completo do arquivo compactado a ser descompactado.
+    /// - **`outputFilePath`:** Caminho completo onde o arquivo descompactado será armazenado.
     ///
     /// ### Fluxo de Operações
     /// 1. Abre o arquivo compactado para leitura.
-    /// 2. Lê o número de entradas de frequência e popula o mapa 'frequencies'.
+    /// 2. Lê o número de entradas de frequência e popula o mapa `frequencies`.
     /// 3. Reconstrói a árvore de Huffman com base nas frequências lidas.
     /// 4. Gera os códigos de Huffman a partir da árvore reconstruída.
     /// 5. Lê o número de bits codificados e os dados codificados.
@@ -147,8 +173,19 @@ public class HuffmanCoding {
     /// 8. Escreve os dados descompactados no arquivo de saída.
     ///
     /// ### Exceções
-    /// - 'IOException': lança exceção se ocorrer um erro durante a leitura ou escrita do arquivo.
-    /// - 'IllegalStateException': lança exceção se o mapa de frequências estiver vazio após a leitura.
+    /// - **`IOException`:** Lança exceção se ocorrer um erro durante a leitura ou escrita do arquivo.
+    /// - **`IllegalStateException`:** Lança exceção se o mapa de frequências estiver vazio após a leitura.
+    ///
+    /// ### Exemplo
+    /// ```java
+    /// HuffmanCoding huffman = new HuffmanCoding();
+    /// huffman.decompress("caminho/do/arquivo/compactado.huff", "caminho/do/arquivo/restaurado.txt");
+    /// ```
+    ///
+    /// @param inputFilePath  Caminho completo do arquivo compactado a ser descompactado.
+    /// @param outputFilePath Caminho completo onde o arquivo descompactado será armazenado.
+    /// @throws IOException Se ocorrer um erro durante a leitura ou escrita do arquivo.
+    /// @throws IllegalStateException Se o mapa de frequências estiver vazio após a leitura.
     public void decompress(String inputFilePath, String outputFilePath) throws IOException {
         try (DataInputStream dis = new DataInputStream(new FileInputStream(inputFilePath))) {
             // Ler o número de entradas de frequência
@@ -193,13 +230,22 @@ public class HuffmanCoding {
     /// Lê todos os bytes de um arquivo especificado pelo caminho.
     ///
     /// ### Parâmetros
-    /// - 'filePath': caminho completo do arquivo a ser lido.
+    /// - **`filePath`:** Caminho completo do arquivo a ser lido.
     ///
     /// ### Retorno
-    /// - 'byte[]': Array de bytes contendo os dados do arquivo.
+    /// - **`byte[]`:** Array de bytes contendo os dados do arquivo.
     ///
     /// ### Exceções
-    /// - 'IOException': lança exceção se ocorrer um erro durante a leitura do arquivo.
+    /// - **`IOException`:** Lança exceção se ocorrer um erro durante a leitura do arquivo.
+    ///
+    /// ### Exemplo
+    /// ```java
+    /// byte[] data = readFile("caminho/do/arquivo.txt");
+    /// ```
+    ///
+    /// @param filePath Caminho completo do arquivo a ser lido.
+    /// @return Array de bytes contendo os dados do arquivo.
+    /// @throws IOException Se ocorrer um erro durante a leitura do arquivo.
     private byte[] readFile(String filePath) throws IOException {
         return readAllBytes(new File(filePath).toPath());
     }
@@ -209,11 +255,21 @@ public class HuffmanCoding {
     /// Escreve um array de bytes em um arquivo especificado pelo caminho.
     ///
     /// ### Parâmetros
-    /// - 'data': Array de bytes a ser escrito no arquivo.
-    /// - 'filePath': caminho completo onde o arquivo será escrito.
+    /// - **`data`:** Array de bytes a ser escrito no arquivo.
+    /// - **`filePath`:** Caminho completo onde o arquivo será escrito.
     ///
     /// ### Exceções
-    /// - 'IOException': lança exceção se ocorrer um erro durante a escrita do arquivo.
+    /// - **`IOException`:** Lança exceção se ocorrer um erro durante a escrita do arquivo.
+    ///
+    /// ### Exemplo
+    /// ```java
+    /// byte[] data = {0x01, 0x02, 0x03};
+    /// writeFile(data, "caminho/do/arquivo.bin");
+    /// ```
+    ///
+    /// @param data     Array de bytes a ser escrito no arquivo.
+    /// @param filePath Caminho completo onde o arquivo será escrito.
+    /// @throws IOException Se ocorrer um erro durante a escrita do arquivo.
     private void writeFile(byte[] data, String filePath) throws IOException {
         write(new File(filePath).toPath(), data);
     }
@@ -223,15 +279,27 @@ public class HuffmanCoding {
     /// Calcula a frequência de cada byte presente nos dados fornecidos.
     ///
     /// ### Parâmetros
-    /// - 'data': Array de bytes representando os dados do arquivo a ser compactado.
+    /// - **`data`:** Array de bytes representando os dados do arquivo a ser compactado.
     ///
     /// ### Fluxo de Operações
     /// 1. Itera sobre cada byte nos dados.
-    /// 2. Atualiza o mapa 'frequencies' incrementando a contagem para cada byte.
+    /// 2. Atualiza o mapa `frequencies` incrementando a contagem para cada byte.
     /// 3. Exibe as frequências calculadas para depuração.
     ///
     /// ### Observações
     /// - Exibe as frequências dos bytes no console para fins de depuração.
+    ///
+    /// ### Exemplo
+    /// ```java
+    /// byte[] data = {0x01, 0x02, 0x01, 0x03};
+    /// calculateFrequencies(data);
+    /// // Frequências:
+    /// // 1: 2
+    /// // 2: 1
+    /// // 3: 1
+    /// ```
+    ///
+    /// @param data Array de bytes representando os dados do arquivo a ser compactado.
     private void calculateFrequencies(byte[] data) {
         // Iterar sobre cada byte nos dados e atualizar as frequências
         for (byte b : data) {
@@ -261,8 +329,8 @@ public class HuffmanCoding {
     /// Constrói a árvore de Huffman com base nas frequências calculadas.
     ///
     /// ### Fluxo de Operações
-    /// 1. Inicializa uma fila de prioridade personalizada ('PriorityQueue') para armazenar os nós de Huffman.
-    /// 2. Insere todos os 'nós' folha na fila de prioridade com suas respectivas frequências.
+    /// 1. Inicializa uma fila de prioridade personalizada (`PriorityQueue`) para armazenar os nós de Huffman.
+    /// 2. Insere todos os nós folha na fila de prioridade com suas respectivas frequências.
     /// 3. Verifica se a fila de prioridade está vazia e lança uma exceção se estiver.
     /// 4. Enquanto houver mais de um nó na fila:
     ///    - Remove os dois nós com as menores frequências.
@@ -271,12 +339,20 @@ public class HuffmanCoding {
     /// 5. O nó restante na fila é a raiz da árvore de Huffman.
     ///
     /// ### Exceções
-    /// - 'IllegalStateException': lança exceção se o mapa de frequências estiver vazio ou se a árvore de Huffman não for construída corretamente.
+    /// - **`IllegalStateException`:** Lança exceção se o mapa de frequências estiver vazio ou se a árvore de Huffman não for construída corretamente.
+    ///
+    /// ### Exemplo
+    /// ```java
+    /// buildHuffmanTree();
+    /// // Árvore de Huffman construída com sucesso.
+    /// ```
+    ///
+    /// @throws IllegalStateException Se o mapa de frequências estiver vazio ou se a árvore de Huffman não for construída corretamente.
     private void buildHuffmanTree() {
         // Inicializar a fila de prioridade personalizada
         PriorityQueue<HuffmanNode> priorityQueue = new PriorityQueue<>();
 
-        // Inserir todos os 'nós' folha na fila de prioridade com sua frequência como prioridade
+        // Inserir todos os nós folha na fila de prioridade com sua frequência como prioridade
         LinkedListUnordered<Byte> keys = frequencies.keySet();
         LinkedListUnordered<Byte>.Node currentKey = keys.getPrimeiro();
         while (currentKey != null) {
@@ -311,16 +387,25 @@ public class HuffmanCoding {
     /// Gera os códigos de Huffman para cada byte na árvore de Huffman.
     ///
     /// ### Parâmetros
-    /// - 'node': nó atual da árvore de Huffman.
-    /// - 'code': Código de Huffman acumulado até o nó atual.
+    /// - **`node`:** Nó atual da árvore de Huffman.
+    /// - **`code`:** Código de Huffman acumulado até o nó atual.
     ///
     /// ### Fluxo de Operações
     /// 1. Verifica se o nó atual não é nulo.
-    /// 2. Se o nó for folha, associa o byte ao código acumulado no mapa 'huffmanCodes'. Se o código estiver vazio (caso de apenas um nó na árvore), associa o código '"0"'.
-    /// 3. Se o nó não for folha, chama recursivamente 'generateCodes' para o nó filho esquerdo adicionando '"0"' ao código e para o nó filho direito adicionando '"1"'.
+    /// 2. Se o nó for folha, associa o byte ao código acumulado no mapa `huffmanCodes`. Se o código estiver vazio (caso de apenas um nó na árvore), associa o código `"0"`.
+    /// 3. Se o nó não for folha, chama recursivamente `generateCodes` para o nó filho esquerdo adicionando `"0"` ao código e para o nó filho direito adicionando `"1"`.
     ///
     /// ### Exceções
     /// Nenhuma exceção lançada diretamente neste metodo.
+    ///
+    /// ### Exemplo
+    /// ```java
+    /// generateCodes(huffmanTreeRoot, "");
+    /// // Códigos de Huffman gerados com sucesso.
+    /// ```
+    ///
+    /// @param node Nó atual da árvore de Huffman.
+    /// @param code Código de Huffman acumulado até o nó atual.
     private void generateCodes(HuffmanNode node, String code) {
         if (node != null) {
             if (node.isLeaf()) {
@@ -340,19 +425,28 @@ public class HuffmanCoding {
     /// Codifica os dados do arquivo original utilizando os códigos de Huffman gerados.
     ///
     /// ### Parâmetros
-    /// - 'data': Array de bytes representando os dados do arquivo original.
+    /// - **`data`:** Array de bytes representando os dados do arquivo original.
     ///
     /// ### Retorno
-    /// - 'StringBuilder': objeto 'StringBuilder' contendo a string de bits codificada.
+    /// - **`StringBuilder`:** Objeto `StringBuilder` contendo a string de bits codificada.
     ///
     /// ### Fluxo de Operações
     /// 1. Itera sobre cada byte nos dados.
     /// 2. Obtém o código de Huffman correspondente ao byte.
-    /// 3. Adiciona o código à 'StringBuilder'.
+    /// 3. Adiciona o código à `StringBuilder`.
     /// 4. Lança uma exceção se um byte não tiver um código de Huffman associado.
     ///
     /// ### Exceções
-    /// - 'IllegalArgumentException': lança exceção se um byte não tiver um código de Huffman associado.
+    /// - **`IllegalArgumentException`:** Lança exceção se um byte não tiver um código de Huffman associado.
+    ///
+    /// ### Exemplo
+    /// ```java
+    /// StringBuilder encodedData = encodeData(data);
+    /// ```
+    ///
+    /// @param data Array de bytes representando os dados do arquivo original.
+    /// @return Objeto `StringBuilder` contendo a string de bits codificada.
+    /// @throws IllegalArgumentException Se um byte não tiver um código de Huffman associado.
     private StringBuilder encodeData(byte[] data) {
         StringBuilder sb = new StringBuilder();
         for (byte b : data) {
@@ -371,20 +465,28 @@ public class HuffmanCoding {
     /// Decodifica uma string de bits codificada de volta para os dados originais utilizando a árvore de Huffman.
     ///
     /// ### Parâmetros
-    /// - 'encodedData': string de bits representando os dados codificados.
+    /// - **`encodedData`:** String de bits representando os dados codificados.
     ///
     /// ### Retorno
-    /// - 'byte[]': Array de bytes contendo os dados descompactados.
+    /// - **`byte[]`:** Array de bytes contendo os dados descompactados.
     ///
     /// ### Fluxo de Operações
-    /// 1. Inicializa um 'ByteArrayOutputStream' para armazenar os bytes decodificados.
+    /// 1. Inicializa um `ByteArrayOutputStream` para armazenar os bytes decodificados.
     /// 2. Itera sobre cada bit na string codificada:
-    ///    - Move para o nó filho esquerdo se o bit for ''0'' ou para o nó filho direito se for ''1''.
-    ///    - Se chegar a um nó folha, escreve o byte correspondente no 'ByteArrayOutputStream' e reinicia a busca a partir da raiz.
+    ///    - Move para o nó filho esquerdo se o bit for `'0'` ou para o nó filho direito se for `'1'`.
+    ///    - Se chegar a um nó folha, escreve o byte correspondente no `ByteArrayOutputStream` e reinicia a busca a partir da raiz.
     /// 3. Trata o caso especial onde a árvore de Huffman possui apenas um nó folha (todos os bytes são iguais).
     ///
     /// ### Exceções
     /// Nenhuma exceção lançada diretamente neste metodo.
+    ///
+    /// ### Exemplo
+    /// ```java
+    /// byte[] decodedData = decodeData(encodedData);
+    /// ```
+    ///
+    /// @param encodedData String de bits representando os dados codificados.
+    /// @return Array de bytes contendo os dados descompactados.
     private byte[] decodeData(String encodedData) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         HuffmanNode current = huffmanTreeRoot;
@@ -415,10 +517,10 @@ public class HuffmanCoding {
     /// Converte um array de bytes para uma string de bits, garantindo que cada byte seja representado por 8 bits.
     ///
     /// ### Parâmetros
-    /// - `bytes`: Array de bytes a ser convertido.
+    /// - **`bytes`:** Array de bytes a ser convertido.
     ///
     /// ### Retorno
-    /// - `String`: String de bits representando os bytes.
+    /// - **`String`:** String de bits representando os bytes.
     ///
     /// ### Fluxo de Operações
     /// 1. Inicializa um `StringBuilder`.
@@ -427,7 +529,17 @@ public class HuffmanCoding {
     ///    - Adiciona a string binária ao `StringBuilder`.
     ///
     /// ### Exceções
-    /// Nenhuma exceção lançada diretamente neste método.
+    /// Nenhuma exceção lançada diretamente neste metodo.
+    ///
+    /// ### Exemplo
+    /// ```java
+    /// byte[] bytes = {0x0F, 0xA0};
+    /// String binaryString = bytesToBinaryString(bytes);
+    /// // binaryString = "0000111110100000"
+    /// ```
+    ///
+    /// @param bytes Array de bytes a ser convertido.
+    /// @return String de bits representando os bytes.
     private String bytesToBinaryString(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) sb.append(format("%8s", toBinaryString(b & 0xFF)).replace(' ', '0'));
